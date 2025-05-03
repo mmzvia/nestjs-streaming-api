@@ -8,9 +8,9 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 
 | Task                                                       | Status    |
 | ---------------------------------------------------------- | --------- |
-| Design project structure                                   | PLANNED   |
-| Design database schema                                     | PLANNED   |
-| Initialize project (including `.env` and setup scripts)    | PLANNED   |
+| Design project structure                                   | DONE      |
+| Design database schema                                     | DONE      |
+| Setup config files                                         | DONE      |
 | Implement auth endpoints                                   | PLANNED   |
 | Implement user endpoints                                   | PLANNED   |
 | Implement video endpoints                                  | PLANNED   |
@@ -33,6 +33,46 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 1. Get all uploaded videos for a user.
 2. Get video details by ID.
 3. Update video title or description.
+
+## Project Modules
+
+### Authentication
+
+- User registration.
+- User login.
+
+### Videos
+
+- Upload a video file.
+- Stream a video via HTTP range requests.
+- Get all videos.
+- Get a specific video.
+- Update video metadata.
+- Delete a video.
+
+## Database Schema
+
+### User
+
+| Field      | Type                                        | Description             |
+| ---------- | ------------------------------------------- | ----------------------- |
+| id         | INTEGER PRIMARY KEY AUTOINCREMENT           | -                       |
+| username   | VARCHAR UNIQUE                              | -                       |
+| password   | VARCHAR                                     | Hashed password         |
+| created_at | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL | -                       |
+
+### Video
+
+| Field        | Type                                           | Description                   |
+| ------------ | ---------------------------------------------- | ----------------------------- |
+| id           | INTEGER PRIMARY KEY AUTOINCREMENT              | -                             |
+| user_id      | INTEGER REFERENCES User(id) NOT NULL           | Owner of the video            |
+| title        | VARCHAR NOT NULL                               | Video title                   |
+| description  | TEXT                                           | Video description             |
+| file_path    | TEXT NOT NULL                                  | Path to video file on disk    |
+| mime_type    | VARCHAR NOT NULL                               | MIME type of uploaded video   |
+| created_at   | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
+| updated_at   | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
 
 ## Scripts
 
