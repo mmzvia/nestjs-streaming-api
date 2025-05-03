@@ -10,7 +10,7 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 | ---------------------------------------------------------- | --------- |
 | Design project structure                                   | DONE      |
 | Design database schema                                     | DONE      |
-| Setup config files                                         | DONE      |
+| Init config files                                          | DONE      |
 | Implement auth endpoints                                   | PLANNED   |
 | Implement user endpoints                                   | PLANNED   |
 | Implement video endpoints                                  | PLANNED   |
