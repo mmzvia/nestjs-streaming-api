@@ -12,7 +12,6 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 | Design database schema                                     | DONE      |
 | Init config files                                          | DONE      |
 | Add auth endpoints                                         | DONE      |
-| Add user endpoints                                         | PLANNED   |
 | Add video endpoints                                        | PLANNED   |
 
 ## Use Cases
@@ -63,16 +62,16 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 
 ### Video
 
-| Field        | Type                                           | Description                   |
-| ------------ | ---------------------------------------------- | ----------------------------- |
-| id           | INTEGER PRIMARY KEY AUTOINCREMENT              | -                             |
-| user_id      | INTEGER REFERENCES User(id) NOT NULL           | Owner of the video            |
-| title        | VARCHAR NOT NULL                               | Video title                   |
-| description  | TEXT                                           | Video description             |
-| file_path    | TEXT NOT NULL                                  | Path to video file on disk    |
-| mime_type    | VARCHAR NOT NULL                               | MIME type of uploaded video   |
-| created_at   | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
-| updated_at   | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
+| Field           | Type                                           | Description                   |
+| --------------- | ---------------------------------------------- | ----------------------------- |
+| id              | INTEGER PRIMARY KEY AUTOINCREMENT              | -                             |
+| uploader_id     | INTEGER REFERENCES User(id) NOT NULL           | Uploader of the video         |
+| title           | VARCHAR NOT NULL                               | Video title                   |
+| description     | TEXT                                           | Video description             |
+| file_path       | TEXT NOT NULL                                  | Path to video file on disk    |
+| mime_type       | VARCHAR NOT NULL                               | MIME type of uploaded video   |
+| created_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
+| updated_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
 
 ## Scripts
 
