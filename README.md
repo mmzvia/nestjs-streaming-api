@@ -1,18 +1,21 @@
-# Technical Specification
+# Nest.js Streaming
 
-## Goal
+## Description
 
-Develop a simple RESTful API server using Nest.js that allows users to upload, stream, and manage personal video files.
+A simple RESTful API server that allows users to upload, stream, and manage personal video files.
 
-## Roadmap
+## Scripts
 
-| Task                                                       | Status    |
-| ---------------------------------------------------------- | --------- |
-| Design project structure                                   | DONE      |
-| Design database schema                                     | DONE      |
-| Init config files                                          | DONE      |
-| Add auth endpoints                                         | DONE      |
-| Add video endpoints                                        | PLANNED   |
+```bash
+# Project setup.
+$ npm install
+
+# Run development server.
+$ npm run start
+
+# Run e2e tests.
+$ npm run test:e2e
+```
 
 ## Use Cases
 
@@ -72,16 +75,3 @@ Develop a simple RESTful API server using Nest.js that allows users to upload, s
 | mime_type       | VARCHAR NOT NULL                               | MIME type of uploaded video   |
 | created_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
 | updated_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
-
-## Scripts
-
-```bash
-# Project setup.
-$ npm install
-
-# Run development server.
-$ npm run start
-
-# Run e2e tests.
-$ npm run test:e2e
-```

@@ -417,6 +417,211 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    describe('GET /videos/:videoId/stream', () => {});
+    describe('GET /videos/:videoId/stream', () => {
+      it('should return full video when range header is not specified', async () => {
+        const dto = {
+          title: 'dummy title',
+          description: 'dummy description',
+        };
+        const videoContent = 'dummy data for video streaming';
+        const videoBuffer = Buffer.from(videoContent);
+        const videMetadata = {
+          filename: 'dummy.mp4',
+          contentType: 'video/mp4',
+        };
+        await pactum
+          .spec()
+          .post('/videos')
+          .withBearerToken(ACCESS_TOKEN)
+          .withMultiPartFormData(dto)
+          .withMultiPartFormData('video', videoBuffer, videMetadata)
+          .stores('videoId', 'id');
+
+        await pactum
+          .spec()
+          .get('/videos/$S{videoId}/stream')
+          .expectStatus(HttpStatus.OK)
+          .expectBody(videoContent);
+      });
+
+      it('should return part of the video when range header is specified', async () => {
+        const dto = {
+          title: 'dummy title',
+          description: 'dummy description',
+        };
+        const videoBuffer = Buffer.from('dummy data for video streaming');
+        const videMetadata = {
+          filename: 'dummy.mp4',
+          contentType: 'video/mp4',
+        };
+        await pactum
+          .spec()
+          .post('/videos')
+          .withBearerToken(ACCESS_TOKEN)
+          .withMultiPartFormData(dto)
+          .withMultiPartFormData('video', videoBuffer, videMetadata)
+          .stores('videoId', 'id');
+
+        await pactum
+          .spec()
+          .get('/videos/$S{videoId}/stream')
+          .withHeaders('range', 'bytes=0-4')
+          .expectStatus(HttpStatus.PARTIAL_CONTENT)
+          .expectHeader('accept-ranges', 'bytes')
+          .expectHeader('content-range', /bytes 0-4\/\d+/)
+          .expectBody('dummy');
+      });
+
+      it('should return not found if video does not exist', async () => {
+        await pactum
+          .spec()
+          .get('/videos/non-existent-id/stream')
+          .expectStatus(HttpStatus.NOT_FOUND);
+      });
+
+      it('should return bad request if range header is invalid', async () => {
+        const dto = {
+          title: 'dummy title',
+          description: 'dummy description',
+        };
+        const videoBuffer = Buffer.from('dummy data');
+        const videMetadata = {
+          filename: 'dummy.mp4',
+          contentType: 'video/mp4',
+        };
+        await pactum
+          .spec()
+          .post('/videos')
+          .withBearerToken(ACCESS_TOKEN)
+          .withMultiPartFormData(dto)
+          .withMultiPartFormData('video', videoBuffer, videMetadata)
+          .stores('videoId', 'id');
+
+        await pactum
+          .spec()
+          .get('/videos/$S{videoId}/stream')
+          .withHeaders('Range', 'bytes=1000-2000')
+          .expectStatus(HttpStatus.BAD_REQUEST);
+      });
+    });
+
+    describe('PATCH /videos/:videoId', () => {
+      it('should update the video metadata', async () => {
+        const originalDto = {
+          title: 'original title',
+          description: 'original description',
+        };
+        const videoBuffer = Buffer.from('dummy data');
+        const videMetadata = {
+          filename: 'dummy.mp4',
+          contentType: 'video/mp4',
+        };
+        await pactum
+          .spec()
+          .post('/videos')
+          .withBearerToken(ACCESS_TOKEN)
+          .withMultiPartFormData(originalDto)
+          .withMultiPartFormData('video', videoBuffer, videMetadata)
+          .stores('videoId', 'id');
+
+        const updatedDto = {
+          title: 'updated title',
+          description: 'updated description',
+        };
+        const responseSchema = {
+          type: 'object',
+          required: ['id', 'userId', 'title', 'description', 'uploadedAt'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            userId: { type: 'string', const: '$S{userId}' },
+            title: { type: 'string', const: updatedDto.title },
+            description: { type: 'string', const: updatedDto.description },
+            uploadedAt: { type: 'string', format: 'date-time' },
+          },
+          additionalProperties: false,
+        };
+        await pactum
+          .spec()
+          .patch('/videos/$S{videoId}')
+          .withBearerToken(ACCESS_TOKEN)
+          .withJson(updatedDto)
+          .expectStatus(HttpStatus.OK)
+          .expectJsonSchema(responseSchema);
+      });
+
+      it('should return not found if video does not exist', async () => {
+        const dto = { title: 'any', description: 'any' };
+        await pactum
+          .spec()
+          .patch('/videos/non-existent-id')
+          .withBearerToken(ACCESS_TOKEN)
+          .withJson(dto)
+          .expectStatus(HttpStatus.NOT_FOUND);
+      });
+
+      it('should return unauthorized if no auth token or invalid token is provided', async () => {
+        await pactum
+          .spec()
+          .patch('/videos/any-id')
+          .expectStatus(HttpStatus.UNAUTHORIZED);
+        await pactum
+          .spec()
+          .patch('/videos/any-id')
+          .withBearerToken('invalid_token')
+          .expectStatus(HttpStatus.UNAUTHORIZED);
+      });
+    });
+
+    describe('DELETE /videos/:videoId', () => {
+      it('should delete the video', async () => {
+        const dto = {
+          title: 'to be deleted',
+          description: 'video to be deleted',
+        };
+        const videoBuffer = Buffer.from('delete me');
+        const videMetadata = {
+          filename: 'delete.mp4',
+          contentType: 'video/mp4',
+        };
+        await pactum
+          .spec()
+          .post('/videos')
+          .withBearerToken(ACCESS_TOKEN)
+          .withMultiPartFormData(dto)
+          .withMultiPartFormData('video', videoBuffer, videMetadata)
+          .stores('videoId', 'id');
+
+        await pactum
+          .spec()
+          .delete('/videos/$S{videoId}')
+          .withBearerToken(ACCESS_TOKEN)
+          .expectStatus(HttpStatus.NO_CONTENT);
+        await pactum
+          .spec()
+          .get('/videos/$S{videoId}')
+          .expectStatus(HttpStatus.NOT_FOUND);
+      });
+
+      it('should return not found if video does not exist', async () => {
+        await pactum
+          .spec()
+          .delete('/videos/non-existent-id')
+          .withBearerToken(ACCESS_TOKEN)
+          .expectStatus(HttpStatus.NOT_FOUND);
+      });
+
+      it('should return unauthorized if no token or invalid token is provided', async () => {
+        await pactum
+          .spec()
+          .delete('/videos/any-id')
+          .expectStatus(HttpStatus.UNAUTHORIZED);
+
+        await pactum
+          .spec()
+          .delete('/videos/any-id')
+          .withBearerToken('invalid_token')
+          .expectStatus(HttpStatus.UNAUTHORIZED);
+      });
+    });
   });
 });
