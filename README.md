@@ -1,4 +1,4 @@
-# Nest.js Streaming
+# Nest.js Streaming API
 
 ## Description
 
