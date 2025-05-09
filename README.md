@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple RESTful API server that allows users to upload, stream, and manage personal video files.
+A simple RESTful API that allows users to upload, stream, and manage personal video files.
 
 ## Scripts
 
