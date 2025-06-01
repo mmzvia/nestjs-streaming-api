@@ -17,7 +17,7 @@ $ npm run start
 $ npm run test:e2e
 ```
 
-## Use Cases
+## Scenarios
 
 **Registration & Login**
 
@@ -36,7 +36,7 @@ $ npm run test:e2e
 2. Get video details by ID.
 3. Update video title or description.
 
-## Project Modules
+## Modules
 
 ### Authentication
 
@@ -51,27 +51,3 @@ $ npm run test:e2e
 - Get a specific video.
 - Update video metadata.
 - Delete a video.
-
-## Database Schema
-
-### User
-
-| Field      | Type                                        | Description             |
-| ---------- | ------------------------------------------- | ----------------------- |
-| id         | INTEGER PRIMARY KEY AUTOINCREMENT           | -                       |
-| username   | VARCHAR UNIQUE                              | -                       |
-| password   | VARCHAR                                     | Hashed password         |
-| created_at | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL | -                       |
-
-### Video
-
-| Field           | Type                                           | Description                   |
-| --------------- | ---------------------------------------------- | ----------------------------- |
-| id              | INTEGER PRIMARY KEY AUTOINCREMENT              | -                             |
-| uploader_id     | INTEGER REFERENCES User(id) NOT NULL           | Uploader of the video         |
-| title           | VARCHAR NOT NULL                               | Video title                   |
-| description     | TEXT                                           | Video description             |
-| file_path       | TEXT NOT NULL                                  | Path to video file on disk    |
-| mime_type       | VARCHAR NOT NULL                               | MIME type of uploaded video   |
-| created_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
-| updated_at      | DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL    | -                             |
