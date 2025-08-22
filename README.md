@@ -6,7 +6,7 @@ A simple RESTful API that allows users to **upload**, **stream**, and **manage p
 
 ## Features
 
-### 🔐 Authentication
+### 🔐 Auth
 - User registration  
 - User login  
 
